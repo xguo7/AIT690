@@ -52,12 +52,12 @@ def extract_username(userName):
 
     while not(userNameIsGood): #until we have a good user name
         userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower()
-        userNameIsGood = check_user_name(userName)
+        userNameIsGood = check_valid_user_name(userName)
 
     print('Nice to meet you, ' + userName.capitalize() + ".")
 
 
-def check_user_name(userName):
+def check_valid_user_name(userName):
     '''
     This function checks if the user's inputted name is properly entered.
     '''
@@ -69,47 +69,39 @@ def check_user_name(userName):
 
 
 
-
-def hold_conversation():
+def determine_reply(userInput):
     '''
-    This function describes the steps taken by Eliza while holding a conversation with the User. This is the bulk of the program...
+    this function analyzes the users response and determines what Eliza
+    should say in response. The funciton takes the user's response, filters
+    the text through various analyzers and determines what response should be
+    provided to the user.
     '''
-    print('What is on your mind today?')
-    stuff = input()
-    print('How do you feel about that?')
+    if re.search("hi",userInput):
+        return "I already said hello"
 
-
-    converse = False
-    return converse
+    return "Please repeat that?", converse = True
 
 
 
 
-def say_goodbye():
-    '''
-    This function generates ways for Eliza to say good bye and selects one at random to say to the User.
-    '''
-    goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell']
-    print(random.choice(goodbyeList))
 
-
-
-
-def main(username, converse):
+def main():
     '''
     This is the main function.
     '''
-    extract_username(userName)
-    while converse:
-        converse = hold_conversation()
-    say_goodbye()
+    converse = True
+    userName = ""
+    introductionList =['What is on your mind today?', 'How do you feel today?']
+    goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell']
 
-
-
-
+    extract_username(userName) # get their name
+    userInput = input(random.choice(introductionList)) #initiate conversation
+    while converse: #while conversation continues
+        reply, converse = determine_reply(userInput) #determine a reply based on user input
+        if reply:
+            userInput = input(reply) #if there is a reply allow user to respond
+    print(random.choice(goodbyeList)) #say goodbye
 
 
 if __name__ == '__main__':
-    converse = True
-    userName = ""
-    main(userName, converse)
+    main()
