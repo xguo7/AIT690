@@ -42,13 +42,12 @@ from collections import defaultdict
 # print(pet['kevin'])
 
 
-
 def extract_username(userName):
     '''
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
     '''
     userName = input('Hello, my name is Eliza 2.0. I am a psychotherapist. What is your name? ').strip().lower()
-    userNameIsGood = check_user_name(userName) #true or false
+    userNameIsGood = check_valid_user_name(userName) #true or false
 
     while not(userNameIsGood): #until we have a good user name
         userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower()
@@ -69,17 +68,23 @@ def check_valid_user_name(userName):
 
 
 
-def determine_reply(userInput):
+def determine_reply(userInput, repetitionList):
     '''
-    this function analyzes the users response and determines what Eliza
+    This function analyzes the users response and determines what Eliza
     should say in response. The funciton takes the user's response, filters
     the text through various analyzers and determines what response should be
-    provided to the user.
+    provided to the user. Bulk of program is provided here.
     '''
     if re.search("hi",userInput):
-        return "I already said hello"
+        return "I already said hello? Please rephrase that", True
 
-    return "Please repeat that?", converse = True
+    return random.choice(repetitionList), True
+
+
+
+
+
+
 
 
 
@@ -87,18 +92,22 @@ def determine_reply(userInput):
 
 def main():
     '''
-    This is the main function.
+    This is the main function. Conversation is started.
+    conversation is continued until an ending is reached. The conversation is ended.
     '''
+    #Variable Initialization
     converse = True
     userName = ""
-    introductionList =['What is on your mind today?', 'How do you feel today?']
-    goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell']
+    introductionList =['What is on your mind today? ', 'How do you feel today? ',]
+    goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell',]
+    repetitionList =['Can you repeat that? ',"Please rephrase your answer. ",]
 
-    extract_username(userName) # get their name
-    userInput = input(random.choice(introductionList)) #initiate conversation
-    while converse: #while conversation continues
-        reply, converse = determine_reply(userInput) #determine a reply based on user input
-        if reply:
+    #main function:
+    extract_username(userName) # start conversation and get their name
+    userInput = input(random.choice(introductionList)) #initiate conversation dialogue
+    while converse: #while conversation continues:
+        reply, converse = determine_reply(userInput, repetitionList) #determine a reply based on user input and if conversation should continue
+        if converse:
             userInput = input(reply) #if there is a reply allow user to respond
     print(random.choice(goodbyeList)) #say goodbye
 
