@@ -1,42 +1,36 @@
+# -*- coding: utf-8 -*-
 """
 AIT 690 | Assignment 1 | Due 9/19/2018
 Billy Ermlick
 Nidhi
 Xiaojie Guo
-
 Description here...
 check out default dict...
-
-
 Your program should engage in a dialogue with the user, with your program Eliza playing the role of a
 psychotherapist. Your program should be able carry out "word spotting", that is it should recognize
 certain key words and respond simply based on that word being present in the input. It should also be
 able to transform certain simple sentence forms from statements (from the user) into questions (that
 Eliza will ask). Also, try to personalize the dialogue by asking and using the user's name.
-
 In addition, your program should be robust. If the user inputs gibberish or a very complicated question,
 Eliza should respond in some plausible way (I didn't quite understand, can you say that another way,
 etc.). “Word spotting”, sentence transformation, and robustness are the minimum requirements for
 your code.
-
 You can implement additional functionalities, inspired by the dialogues presented in
 Weizenbaum paper. You may receive up to 1 bonus point max for any additional functionalities.
 This program should rely heavily on the use of regular expressions, so please make sure to review
 some introductory material in Learning Python, Programming Python, or some other source before
 attempting this program.
-
-
 Please comment your code. In particular, explain what words you are spotting for (and why) and what
 statement forms you are converting into questions (and why). Also make sure you name, class, etc. is
 clearly included in the comments.
 It is fine to use a Python reference book for examples of loops, variables, etc., but your Eliza specific
 code must be your own, and not taken from any other source (human, published, on the web, etc.)
-
-
 """
 import re
 import random
 from collections import defaultdict
+import nltk
+
 # pet = defaultdict(lambda: 'dog')
 # pet['kai'] = 'snake'
 # print(pet['kevin'])
@@ -47,26 +41,39 @@ def extract_username(userName):
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
     '''
     userName = input('Hello, my name is Eliza 2.0. I am a psychotherapist. What is your name? ').strip().lower()
-    userNameIsGood = check_valid_user_name(userName) #true or false
+    name,userNameIsGood = check_valid_user_name(userName) #true or false
 
     while not(userNameIsGood): #until we have a good user name
         userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower()
-        userNameIsGood = check_valid_user_name(userName)
+        name,userNameIsGood = check_valid_user_name(userName)
 
-    print('Nice to meet you, ' + userName.capitalize() + ".")
-    return userName
+
+    print('Nice to meet you, ' + name.capitalize() + ".")
+    return name
 
 
 def check_valid_user_name(userName):
     '''
-    This function checks if the user's inputted name is properly entered.
+    This function extracts the username from the response and checks if the
+    user's inputted name is valid.
     '''
-    if len(userName) <10:
-        return True
+    if name_retrieval('is\s(.*)',userName):
+        name=name_retrieval('is\s(.*)',userName)
+    elif name_retrieval('am\s(.*)',userName):
+        name=name_retrieval('am\s(.*)',userName)
+    else:
+        name=userName
+        #error checking:
+    if len(name) >=10:
+        return [], False
+    return name, True
+
+def name_retrieval(re_pattern,content):
+    query=re.compile(re_pattern,re.MULTILINE|re.DOTALL)
+    if len(re.findall(query,content))>0:
+        return re.findall(query,content)[0]
     else:
         return False
-
-
 
 
 def determine_reply(userInput, userName):
@@ -79,20 +86,19 @@ def determine_reply(userInput, userName):
     repetitionList =['Can you repeat that, ' + userName + '? ', "Please rephrase your answer. ",
                      "I didn't quite understand, can you say that another way? ",]
 
-    if re.search("hi",userInput):
+    if re.search("\bhi\b",userInput):
         return "I already said hello? Please rephrase that. ", True
 
 
 
 
     if re.search("(depressed|sad|upset)",userInput):
+        output = re.sub(r"I'm",r'you are',userInput)
         output = re.sub(r'I',r'you',userInput)
         output = re.sub(r'am',r'are',output)
-        output = re.sub(r"I'm",r'you are',output)
         output = re.sub(r"my",r'your',output)
         output = re.sub(r"was",r'were',output)
-        output = re.sub(r"I'm",r'you are',output)
-        output = 'why ' + output
+        output = 'why ' + output + '? '
         return output.capitalize(), True
 
     return random.choice(repetitionList), True
