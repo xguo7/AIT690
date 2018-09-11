@@ -1,70 +1,71 @@
+# -*- coding: utf-8 -*-
 """
 AIT 690 | Assignment 1 | Due 9/19/2018
 Billy Ermlick
 Nidhi
 Xiaojie Guo
-
 Description here...
 check out default dict...
-
-
 Your program should engage in a dialogue with the user, with your program Eliza playing the role of a
 psychotherapist. Your program should be able carry out "word spotting", that is it should recognize
 certain key words and respond simply based on that word being present in the input. It should also be
 able to transform certain simple sentence forms from statements (from the user) into questions (that
 Eliza will ask). Also, try to personalize the dialogue by asking and using the user's name.
-
 In addition, your program should be robust. If the user inputs gibberish or a very complicated question,
 Eliza should respond in some plausible way (I didn't quite understand, can you say that another way,
 etc.). “Word spotting”, sentence transformation, and robustness are the minimum requirements for
 your code.
-
 You can implement additional functionalities, inspired by the dialogues presented in
 Weizenbaum paper. You may receive up to 1 bonus point max for any additional functionalities.
 This program should rely heavily on the use of regular expressions, so please make sure to review
 some introductory material in Learning Python, Programming Python, or some other source before
 attempting this program.
-
-
 Please comment your code. In particular, explain what words you are spotting for (and why) and what
 statement forms you are converting into questions (and why). Also make sure you name, class, etc. is
 clearly included in the comments.
 It is fine to use a Python reference book for examples of loops, variables, etc., but your Eliza specific
 code must be your own, and not taken from any other source (human, published, on the web, etc.)
-
-
 """
 import re
 import random
 from collections import defaultdict
+import nltk
+
 # pet = defaultdict(lambda: 'dog')
 # pet['kai'] = 'snake'
 # print(pet['kevin'])
-
+def contentRetieval(re_pattern,content):
+    query=re.compile(re_pattern,re.MULTILINE|re.DOTALL)
+    return re.findall(query,content)
 
 def extract_username(userName):
     '''
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
     '''
     userName = input('Hello, my name is Eliza 2.0. I am a psychotherapist. What is your name? ').strip().lower()
-    userNameIsGood = check_valid_user_name(userName) #true or false
-
+    name,userNameIsGood = check_valid_user_name(userName) #true or false
+    
     while not(userNameIsGood): #until we have a good user name
         userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower()
-        userNameIsGood = check_valid_user_name(userName)
+        name,userNameIsGood = check_valid_user_name(userName)
+    
 
-    print('Nice to meet you, ' + userName.capitalize() + ".")
-    return userName
+    print('Nice to meet you, ' + name[0].capitalize() + ".")
+    return name[0]
 
 
 def check_valid_user_name(userName):
     '''
-    This function checks if the user's inputted name is properly entered.
+    This function checks if the user's inputted name is properly entered, if valid, extract the name from sentence'
     '''
-    if len(userName) <10:
-        return True
-    else:
-        return False
+    name=contentRetieval('is\s(.*)',userName)
+    if name==[]: 
+        name=contentRetieval('am\s(.*)',userName)
+    if name==[]:
+      if len(userName) >=10:
+        return [],False
+      else: name=userName
+    return name,True
 
 
 
@@ -83,15 +84,6 @@ def determine_reply(userInput, userName):
         return "I already said hello? Please rephrase that. ", True
 
     return random.choice(repetitionList), True
-
-
-
-
-
-
-
-
-
 
 
 def main():
