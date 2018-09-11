@@ -41,11 +41,11 @@ def extract_username(userName):
     '''
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
     '''
-    userName = input('Hello, my name is Eliza 2.0. I am a psychotherapist. What is your name? ').strip().lower()
+    userName = input('Hello, my name is Eliza 2.0. I am a psychotherapist. What is your name? ').strip().lower().strip(punctuation)
     name,userNameIsGood = check_valid_user_name(userName) #true or false
 
     while not(userNameIsGood): #until we have a good user name
-        userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower()
+        userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower().strip(punctuation)
         name,userNameIsGood = check_valid_user_name(userName)
 
 
@@ -109,8 +109,6 @@ def determine_reply(userInput, userName):
     #   "Talking to you"]]
     #  ]
 
-    #Remove all punctuations from the input
-    userInput = userInput.strip(punctuation)
 
     if re.search("(hi|hello)",userInput):
         return "I already said hello? Please rephrase that. ", True
@@ -170,7 +168,7 @@ def main():
 
     #main function:
     userName = extract_username(userName) # start conversation and get their name
-    userInput = input(random.choice(introductionList)) #initiate conversation dialogue
+    userInput = input(random.choice(introductionList)).strip() #initiate conversation dialogue
     while converse: #while conversation continues:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
         if converse:
