@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 AIT 690 | Assignment 1 | Due 9/19/2018
 Billy Ermlick
@@ -6,7 +7,6 @@ Nidhi
 Xiaojie Guo
 Description here...
 check out default dict...
-
 Your program should engage in a dialogue with the user, with your program Eliza playing the role of a
 psychotherapist. Your program should be able carry out "word spotting", that is it should recognize
 certain key words and respond simply based on that word being present in the input. It should also be
@@ -16,7 +16,6 @@ In addition, your program should be robust. If the user inputs gibberish or a ve
 Eliza should respond in some plausible way (I didn't quite understand, can you say that another way,
 etc.). “Word spotting”, sentence transformation, and robustness are the minimum requirements for
 your code.
-
 You can implement additional functionalities, inspired by the dialogues presented in
 Weizenbaum paper. You may receive up to 1 bonus point max for any additional functionalities.
 This program should rely heavily on the use of regular expressions, so please make sure to review
@@ -33,7 +32,6 @@ import random
 from collections import defaultdict
 from string import punctuation
 import nltk
-
 
 eliza = (" \
                 ||||||||||||||||||||||||||||||||||||||||||||||||| \n \
@@ -105,23 +103,56 @@ def determine_reply(userInput, userName):
     '''
     repetitionList =['Can you repeat that, ' + userName.capitalize() + '? ', "I'm not sure I follow? ",
                      "I didn't quite understand, can you say that another way? ",]
-    userInput = userInput.strip(punctuation)
-    output = re.sub(r"\bI'm\b",r'you are',userInput)
-    output = re.sub(r"\bI am\b",r'you are',output)
-    output = re.sub(r'\bI\b',r'you',output)
-    output = re.sub(r'\bam\b',r'are',output)
-    output = re.sub(r"\bmy\b",r'your',output)
-    output = re.sub(r"\bwas\b",r'were',output)
-    output = re.sub(r"\bme\b",r'you',output)
-    output = re.sub(r"\bmine\b",r'yours',output)
 
-
+    def transform(Input):
+         output = re.sub(r"I'm",r'you are',Input)
+         
+         if ('you' in output or'You' in output) and ('I' in output or 'me' in output):
+           if 'I' in output:
+             output = re.sub(r'I',r'1',output)
+             output = re.sub(r"[Yy]ou",r'me',output)
+             output = re.sub(r'1',r'you',output)
+           else:
+             output = re.sub(r'me',r'1',output)
+             output = re.sub(r"[Yy]ou",r'I',output)
+             output = re.sub(r'1',r'you',output)
+         elif 'you' in output or'You' in output:
+               output = re.sub(r'[yY]ou',r'I',output)
+         elif 'me' in output:
+               output = re.sub(r'me',r'you',output)
+         elif 'I' in output:
+               output = re.sub(r'I',r'you',output)
+                            
+         output = re.sub(r'am',r'1',output)
+         output = re.sub(r"are",r'am',output)
+         output = re.sub(r'1',r'are',output)
+               
+         output = re.sub(r"[Yy]ours",r'1',output)
+         output = re.sub(r"[Mm]ine",r'yours',output)
+         output = re.sub(r"1",r'mine',output)
+         
+         output = re.sub(r"my",r'1',output)
+         output = re.sub(r"[Yy]our",r'my',output)
+         output = re.sub(r"1",r'your',output)
+         
+         output = re.sub(r"was",r'1',output)
+         output = re.sub(r"were",r'was',output)
+         output = re.sub(r"1",r'were',output)       
+         return output
+    
+    if re.search(r"^[Ii] am(.*)",userInput):     
+        state=re.findall(r'[iI] am (.*)',userInput)
+        return 'How long have you been'+transform(state[0])+'?'
+    
+    if re.search(r"^[iI]t seems that(.*)",userInput):     
+        state=re.findall(r'[Ii]t seems that (.*)',userInput)
+        return 'What makes you think '+transform(state[0])+'?'
 
     if re.search(r"^([Hh]ow|[Ww]hat) (.*)",userInput):
         return "What do you think? ", True
 
     if re.search(r"\b(hi|hello)\b",userInput):
-        return "Hello again. What's on your mind? ", True
+        return "I already said hello? ", True
 
     if re.search(r".* all .*",userInput):
         return "In what way? ", True
@@ -129,28 +160,20 @@ def determine_reply(userInput, userName):
     if re.search(r".* always .*",userInput):
         return "Can you think of a specific example? ", True
 
-    if re.search(r"\b(depressed|sad|upset)\b",userInput):
-        output = re.sub(r".*\b(depressed|sad|upset)\b.*",
-               r"What made you \1?",userInput)
-        return output.capitalize(), True
+    if re.search(r"\b(depressed|sad|upset|unhappy)\b",userInput):
+        emotion= re.findall(r"\b(depressed|sad|upset|unhappy)\b",userInput)
+        output=r"What made you "+emotion[0]
+        return output.capitalize()+'?', True
 
-    if re.search(r"\b(yes|no)",userInput):
-        return "And why do you think that is? ", True
+    if re.search(r"\b(yes|no)\b",userInput):
+        return "Why is that? ", True
 
     if re.search(r"\b(bye|fairwell|adios)\b",userInput):
         return "", False
 
-    if re.search(r"\b(gave) me\b",userInput):
-        output = re.sub(r".*\b(give|gave)\b.*",
-               r"What made them give you that? ",userInput)
-        return output.capitalize(), True
-
     # if there is no match ask them to rephrase the question:
-    return output.capitalize() + '? ', True
+    else: return transform(userInput).capitalize() + '? ', True
     # return random.choice(repetitionList), True
-
-
-
 
 
 def main():
@@ -165,8 +188,6 @@ def main():
     introductionList =['What is on your mind today? ', 'How do you feel today? ',]
     goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell',]
     print(eliza)
-
-
     #main function:
     userName = extract_username(userName) # start conversation and get their name
     userInput = input(random.choice(introductionList)).strip() #initiate conversation dialogue
