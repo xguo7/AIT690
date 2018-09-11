@@ -63,12 +63,16 @@ def check_valid_user_name(userName):
         name=name_retrieval('am\s(.*)',userName)
     else:
         name=userName
-        #error checking:
+    #error checking:
     if len(name) >=10:
         return [], False
     return name, True
 
 def name_retrieval(re_pattern,content):
+    '''
+    This function returns either the name of the user or false indicating that their
+    result is not present.
+    '''
     query=re.compile(re_pattern,re.MULTILINE|re.DOTALL)
     if len(re.findall(query,content))>0:
         return re.findall(query,content)[0]
@@ -85,12 +89,30 @@ def determine_reply(userInput, userName):
     '''
     repetitionList =['Can you repeat that, ' + userName + '? ', "Please rephrase your answer. ",
                      "I didn't quite understand, can you say that another way? ",]
+    # substitutionList = {
+    # "are": "am",
+    # "am": "are",
+    # "you": "I",
+    # "me": "you",
+    # "yours": "mine"
+    # }
+    #
+    # replies = [
+    # [r'How (.*)',
+    #  ["I am good",
+    #   "ThankYou for asking..I am fine..How about you?",
+    #   "Pretty well. You?"]],
+    #
+    # [r'What (.*)',
+    #  ["What do you think?",
+    #   "Talking to you"]]
+    #  ]
+
+    #Remove all punctuations from the input
+    userInput = userInput.strip(punctuation)
 
     if re.search("\bhi\b",userInput):
         return "I already said hello? Please rephrase that. ", True
-
-
-
 
     if re.search("(depressed|sad|upset)",userInput):
         output = re.sub(r"I'm",r'you are',userInput)
@@ -101,9 +123,34 @@ def determine_reply(userInput, userName):
         output = 'why ' + output + '? '
         return output.capitalize(), True
 
+
+
+    #Look at the list of replies and see if we find a match
+    # for key, replyList in replies:
+    #      matchFound = re.match(key, userInput)
+    #
+    #      if matchFound:
+    #      #If a match is found, choose a random reply
+    #          reply = random.choice(replyList)
+    #          #Do the substitutions incase it is required (Substitution work is still in progress)
+    #          for word in matchFound.groups():
+    #              finalword = substitute(word)
+    #          return reply, True
+    #      else:
+    #          return random.choice(repetitionList), True
+
+    # if there is no match ask them to rephrase the question:
     return random.choice(repetitionList), True
 
 
+
+    # def substitute(word):
+    #     wordLower = word.lower().split()
+    #     for w in range(0,len(wordLower)):
+    #         if wordLower[w] in substitutionList:
+    #            #print('in if')
+    #            wordLower[w] = substitutionList[wordLower[w]]
+    #     return ' '.join(wordLower)
 
 
 
