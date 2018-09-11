@@ -82,12 +82,20 @@ def determine_reply(userInput, userName):
     if re.search("hi",userInput):
         return "I already said hello? Please rephrase that. ", True
 
+
+
+
+    if re.search("(depressed|sad|upset)",userInput):
+        output = re.sub(r'I',r'you',userInput)
+        output = re.sub(r'am',r'are',output)
+        output = re.sub(r"I'm",r'you are',output)
+        output = re.sub(r"my",r'your',output)
+        output = re.sub(r"was",r'were',output)
+        output = re.sub(r"I'm",r'you are',output)
+        output = 'why ' + output
+        return output.capitalize(), True
+
     return random.choice(repetitionList), True
-
-
-
-
-
 
 
 
