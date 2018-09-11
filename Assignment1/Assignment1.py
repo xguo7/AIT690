@@ -29,6 +29,7 @@ code must be your own, and not taken from any other source (human, published, on
 import re
 import random
 from collections import defaultdict
+from string import punctuation
 import nltk
 
 # pet = defaultdict(lambda: 'dog')
@@ -70,7 +71,7 @@ def check_valid_user_name(userName):
 
 def name_retrieval(re_pattern,content):
     '''
-    This function returns either the name of the user or false indicating that their
+    This function returns either the name of the user or false, indicating that the
     result is not present.
     '''
     query=re.compile(re_pattern,re.MULTILINE|re.DOTALL)
@@ -111,7 +112,7 @@ def determine_reply(userInput, userName):
     #Remove all punctuations from the input
     userInput = userInput.strip(punctuation)
 
-    if re.search("\bhi\b",userInput):
+    if re.search("(hi|hello)",userInput):
         return "I already said hello? Please rephrase that. ", True
 
     if re.search("(depressed|sad|upset)",userInput):
