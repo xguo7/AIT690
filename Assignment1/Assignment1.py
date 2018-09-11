@@ -116,6 +116,11 @@ def determine_reply(userInput, userName):
     output = re.sub(r"my",r'your',output)
     output = re.sub(r"was",r'were',output)
     output = re.sub(r"me",r'you',output)
+    output = re.sub(r"yours",r'mine',output)
+    output = re.sub(r"you",r'I',output)
+    output = re.sub(r"are",r'am',output)
+
+
 
     if re.search(" (hi|hello) ",userInput):
         return "I already said hello? ", True
@@ -130,7 +135,7 @@ def determine_reply(userInput, userName):
         output = output + '? '
         return output.capitalize(), True
 
-    if re.search(".*(yes|no)/*",userInput):
+    if re.search(".*(yes|no).*",userInput):
         return "Why is that? ", True
 
     if re.search("(bye|fairwell|adios)",userInput):
