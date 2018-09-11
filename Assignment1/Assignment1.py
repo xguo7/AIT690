@@ -110,7 +110,12 @@ def determine_reply(userInput, userName):
     #  ["What do you think?",
     #   "Talking to you"]]
     #  ]
-
+    output = re.sub(r"I'm",r'you are',userInput)
+    output = re.sub(r'I',r'you',output)
+    output = re.sub(r'am',r'are',output)
+    output = re.sub(r"my",r'your',output)
+    output = re.sub(r"was",r'were',output)
+    output = re.sub(r"me",r'you',output)
 
     if re.search(" (hi|hello) ",userInput):
         return "I already said hello? ", True
@@ -122,16 +127,14 @@ def determine_reply(userInput, userName):
         return "Can you think of a specific example? ", True
 
     if re.search("(depressed|sad|upset)",userInput):
-        output = re.sub(r"I'm",r'you are',userInput)
-        output = re.sub(r'I',r'you',userInput)
-        output = re.sub(r'am',r'are',output)
-        output = re.sub(r"my",r'your',output)
-        output = re.sub(r"was",r'were',output)
         output = output + '? '
         return output.capitalize(), True
 
-    if re.search(".* (yes|no) .*",userInput):
+    if re.search(".*(yes|no)/*",userInput):
         return "Why is that? ", True
+
+    if re.search("(bye|fairwell|adios)",userInput):
+        return "", False
 
     #Look at the list of replies and see if we find a match
     # for key, replyList in replies:
@@ -148,7 +151,8 @@ def determine_reply(userInput, userName):
     #          return random.choice(repetitionList), True
 
     # if there is no match ask them to rephrase the question:
-    return random.choice(repetitionList), True
+    return output.capitalize() + '? ', True
+    # return random.choice(repetitionList), True
 
 
 
