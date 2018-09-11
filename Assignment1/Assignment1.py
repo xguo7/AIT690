@@ -6,6 +6,7 @@ Nidhi
 Xiaojie Guo
 Description here...
 check out default dict...
+
 Your program should engage in a dialogue with the user, with your program Eliza playing the role of a
 psychotherapist. Your program should be able carry out "word spotting", that is it should recognize
 certain key words and respond simply based on that word being present in the input. It should also be
@@ -15,6 +16,7 @@ In addition, your program should be robust. If the user inputs gibberish or a ve
 Eliza should respond in some plausible way (I didn't quite understand, can you say that another way,
 etc.). “Word spotting”, sentence transformation, and robustness are the minimum requirements for
 your code.
+
 You can implement additional functionalities, inspired by the dialogues presented in
 Weizenbaum paper. You may receive up to 1 bonus point max for any additional functionalities.
 This program should rely heavily on the use of regular expressions, so please make sure to review
@@ -110,8 +112,14 @@ def determine_reply(userInput, userName):
     #  ]
 
 
-    if re.search("(hi|hello)",userInput):
+    if re.search(" (hi|hello) ",userInput):
         return "I already said hello? Please rephrase that. ", True
+
+    if re.search(".* all .*",userInput):
+        return "In what way? ", True
+
+    if re.search(".* always .*",userInput):
+        return "Can you think of a specific example? ", True
 
     if re.search("(depressed|sad|upset)",userInput):
         output = re.sub(r"I'm",r'you are',userInput)
