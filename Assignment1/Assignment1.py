@@ -90,7 +90,7 @@ def determine_reply(userInput, userName):
     the text through various analyzers and determines what response should be
     provided to the user. Bulk of program is provided here.
     '''
-    repetitionList =['Can you repeat that, ' + userName + '? ', "Please rephrase your answer. ",
+    repetitionList =['Can you repeat that, ' + userName.capitalize() + '? ', "Please rephrase your answer. ",
                      "I didn't quite understand, can you say that another way? ",]
     # substitutionList = {
     # "are": "am",
@@ -113,7 +113,7 @@ def determine_reply(userInput, userName):
 
 
     if re.search(" (hi|hello) ",userInput):
-        return "I already said hello? Please rephrase that. ", True
+        return "I already said hello? ", True
 
     if re.search(".* all .*",userInput):
         return "In what way? ", True
@@ -127,10 +127,11 @@ def determine_reply(userInput, userName):
         output = re.sub(r'am',r'are',output)
         output = re.sub(r"my",r'your',output)
         output = re.sub(r"was",r'were',output)
-        output = 'why ' + output + '? '
+        output = output + '? '
         return output.capitalize(), True
 
-
+    if re.search(".* (yes|no) .*",userInput):
+        return "Why is that? ", True
 
     #Look at the list of replies and see if we find a match
     # for key, replyList in replies:
