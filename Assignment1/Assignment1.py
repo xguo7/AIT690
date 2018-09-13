@@ -54,15 +54,15 @@ def extract_username(userName):
     '''
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
     '''
-    userName = input('Hello, my name is Eliza. I am a psychotherapist. What is your name? ').strip().lower().strip(punctuation)
+    userName = input('Hello, my name is Eliza. I am a psychotherapist. What is your name? \n'.upper()).strip().lower().strip(punctuation)
     userName,userNameIsGood = check_valid_user_name(userName) #true or false
 
     while not(userNameIsGood): #until we have a good user name
-        userName = input("I'm sorry I didn't catch that. What is your name again? ").strip().lower().strip(punctuation)
+        userName = input("I'm sorry I didn't catch that. What is your name again? \n").strip().lower().strip(punctuation).upper()
         userName, userNameIsGood = check_valid_user_name(userName)
 
 
-    print('Nice to meet you, ' + userName.capitalize() + ".")
+    print(('Nice to meet you, ' + userName + ". ").upper())
     return userName
 
 
@@ -101,78 +101,69 @@ def determine_reply(userInput, userName):
     the text through various analyzers and determines what response should be
     provided to the user. Bulk of program is provided here.
     '''
-    repetitionList =['Can you repeat that, ' + userName.capitalize() + '? ', "I'm not sure I follow? ",
-                     "I didn't quite understand, can you say that another way? ",]
+    repetitionList =['Can you repeat that, ' + userName.upper() + '? \n', "I'm not sure I follow? \n",
+                     "I didn't quite understand, can you say that another way? \n",]
 
     def transform(Input):
-         output = re.sub(r"I'm",r'you are',Input)
-         
-         if ('you' in output or'You' in output) and ('I' in output or 'me' in output):
-           if 'I' in output:
-             output = re.sub(r'I',r'1',output)
-             output = re.sub(r"[Yy]ou",r'me',output)
-             output = re.sub(r'1',r'you',output)
-           else:
-             output = re.sub(r'me',r'1',output)
-             output = re.sub(r"[Yy]ou",r'I',output)
-             output = re.sub(r'1',r'you',output)
-         elif 'you' in output or'You' in output:
-               output = re.sub(r'[yY]ou',r'I',output)
-         elif 'me' in output:
-               output = re.sub(r'me',r'you',output)
-         elif 'I' in output:
-               output = re.sub(r'I',r'you',output)
-                            
-         output = re.sub(r'am',r'1',output)
-         output = re.sub(r"are",r'am',output)
-         output = re.sub(r'1',r'are',output)
-               
-         output = re.sub(r"[Yy]ours",r'1',output)
-         output = re.sub(r"[Mm]ine",r'yours',output)
-         output = re.sub(r"1",r'mine',output)
-         
-         output = re.sub(r"my",r'1',output)
-         output = re.sub(r"[Yy]our",r'my',output)
-         output = re.sub(r"1",r'your',output)
-         
-         output = re.sub(r"was",r'1',output)
-         output = re.sub(r"were",r'was',output)
-         output = re.sub(r"1",r'were',output)       
-         return output
-    
-    if re.search(r"^[Ii] am(.*)",userInput):     
-        state=re.findall(r'[iI] am (.*)',userInput)
-        return 'How long have you been'+transform(state[0])+'?'
-    
-    if re.search(r"^[iI]t seems that(.*)",userInput):     
-        state=re.findall(r'[Ii]t seems that (.*)',userInput)
-        return 'What makes you think '+transform(state[0])+'?'
+        output = re.sub(r'\bi\b',r'-1-',Input)
+        output = re.sub(r'\bam\b',r'-2-',output)
+        output = re.sub(r"\bmy\b",r'-3-',output)
+        output = re.sub(r"\bwas\b",r'-4-',output)
+        output = re.sub(r"\bme\b",r'-5-',output)
+        output = re.sub(r"\bmine\b",r'-6-',output)
+        output = re.sub(r"\byou\b",r'-7-',output)
+        output = re.sub(r"\byour\b",r'-8-',output)
+        output = re.sub(r"\byours\b",r'-9-',output)
+        output = re.sub(r"\bare\b",r'-10-',output)
+        output = re.sub(r"\bwere\b",r'-11-',output)
 
-    if re.search(r"^([Hh]ow|[Ww]hat) (.*)",userInput):
-        return "What do you think? ", True
+        output = re.sub(r'-1-',r'you',output)
+        output = re.sub(r'-2-',r'are',output)
+        output = re.sub(r"-3-",r'your',output)
+        output = re.sub(r"-4-",r'were',output)
+        output = re.sub(r"-5-",r'you',output)
+        output = re.sub(r"-6-",r'yours',output)
+        output = re.sub(r"-7-",r'I',output)
+        output = re.sub(r"-8-",r'my',output)
+        output = re.sub(r"-9-",r'mine',output)
+        output = re.sub(r"-10-",r'am',output)
+        output = re.sub(r"-11-",r'was',output)
+
+        return output
+
+    if re.search(r"^(how|what) (.*)",userInput):
+        return r"What do you think? \n".upper(), True
+
+    if re.search(r"^who.*",userInput):
+        return "Who do you think? \n".upper(), True
 
     if re.search(r"\b(hi|hello)\b",userInput):
-        return "I already said hello? ", True
+        return "Hello again. What's on your mind? \n".upper(), True
 
     if re.search(r".* all .*",userInput):
-        return "In what way? ", True
+        return "In what way? \n".upper(), True
 
     if re.search(r".* always .*",userInput):
-        return "Can you think of a specific example? ", True
+        return "Can you think of a specific example? \n".upper(), True
 
-    if re.search(r"\b(depressed|sad|upset|unhappy)\b",userInput):
-        emotion= re.findall(r"\b(depressed|sad|upset|unhappy)\b",userInput)
-        output=r"What made you "+emotion[0]
-        return output.capitalize()+'?', True
+    if re.search(r"\b(depressed|sad|upset)\b",userInput):
+        output = re.sub(r".*\b(depressed|sad|upset)\b.*",
+               r"What made you \1? \n",userInput)
+        return output.upper(), True
 
     if re.search(r"\b(yes|no)\b",userInput):
-        return "Why is that? ", True
+        return "And why do you think that is? \n".upper(), True
+
+    if re.search(r"\b(gave) me\b",userInput):
+        output = re.sub(r".*\b(gave)\b.*",
+               r"What made them give you that? \n",userInput)
+        return output.upper(), True
 
     if re.search(r"\b(bye|fairwell|adios)\b",userInput):
-        return "", False
+        return "\n", False
 
     # if there is no match ask them to rephrase the question:
-    else: return transform(userInput).capitalize() + '? ', True
+    else: return transform(userInput).upper() + '? \n', True
     # return random.choice(repetitionList), True
 
 
@@ -185,18 +176,18 @@ def main():
     converse = True
     userName = ""
     misundestandingCounter=0
-    introductionList =['What is on your mind today? ', 'How do you feel today? ',]
-    goodbyeList =['I hope this conversation was productive. Goodbye.','Goodbye.', 'Farewell',]
+    introductionList =['What is on your mind today? \n', 'How do you feel today? \n',]
+    goodbyeList =['I hope this conversation was productive. Goodbye. \n','Goodbye. \n', 'Farewell \n',]
     print(eliza)
     #main function:
     userName = extract_username(userName) # start conversation and get their name
-    userInput = input(random.choice(introductionList)).strip() #initiate conversation dialogue
+    userInput = input(random.choice(introductionList).upper()).strip().strip(punctuation).lower() #initiate conversation dialogue
     while converse: #while conversation continues:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
         if converse:
-            userInput = input(reply) #if there is a reply allow user to respond
+            userInput = input(reply).strip().strip(punctuation).lower() #if there is a reply allow user to respond
 
-    print(random.choice(goodbyeList)) #say goodbye
+    print(random.choice(goodbyeList).upper()) #say goodbye
 
 
 if __name__ == '__main__':
