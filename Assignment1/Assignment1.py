@@ -46,10 +46,6 @@ eliza = (" \
                \n")
 
 
-# pet = defaultdict(lambda: 'dog')
-# pet['kai'] = 'snake'
-# print(pet['kevin'])
-
 def extract_username(userName):
     '''
     This function introduces Eliza to the User, asks the User their name and begins the conversation.
@@ -97,7 +93,7 @@ def name_retrieval(re_pattern,content):
 def determine_reply(userInput, userName):
     '''
     This function analyzes the users response and determines what Eliza
-    should say in response. The funciton takes the user's response, filters
+    should say in response. The function takes the user's response, filters
     the text through various analyzers and determines what response should be
     provided to the user. Bulk of program is provided here.
     '''
@@ -105,16 +101,37 @@ def determine_reply(userInput, userName):
                      "I didn't quite understand, can you say that another way? \n",]
 
     def transform(Input):
+		#Replace "i" with "you"
         output = re.sub(r'\bi\b',r'-1-',Input)
+		
+		#Replace "am" with "are"
         output = re.sub(r'\bam\b',r'-2-',output)
+		
+		#Replace "my" with "your"
         output = re.sub(r"\bmy\b",r'-3-',output)
+		
+		#Replace "was" with "were"
         output = re.sub(r"\bwas\b",r'-4-',output)
+		
+		#Replace "me" with "you"
         output = re.sub(r"\bme\b",r'-5-',output)
+		
+		#Replace "mine" with "yours"
         output = re.sub(r"\bmine\b",r'-6-',output)
+		
+		#Replace "you" with "I"
         output = re.sub(r"\byou\b",r'-7-',output)
+		
+		#Replace "your" with "my"
         output = re.sub(r"\byour\b",r'-8-',output)
+		
+		#Replace "yours" with "mine"
         output = re.sub(r"\byours\b",r'-9-',output)
+		
+		#Replace "are" with "am"
         output = re.sub(r"\bare\b",r'-10-',output)
+		
+		#Replace "were" with "was"
         output = re.sub(r"\bwere\b",r'-11-',output)
 
         output = re.sub(r'-1-',r'you',output)
@@ -130,40 +147,92 @@ def determine_reply(userInput, userName):
         output = re.sub(r"-11-",r'was',output)
 
         return output
+		
+    #If block to search for inputs starting with "how"
+    if re.search(r"^(how) (.*)",userInput):
+        #Reply is selected from this list
+        howRepliesList = ['What do you think?', 'Why do you ask?',]
+        output = random.choice(howRepliesList)
+        return output.upper() + '\n', True
+		
+    #If block to search for inputs starting with "Can you"
+    if re.search(r"^can you.*",userInput):
+        #Partition the input to find the context of it 		
+        before, mid, after = userInput.partition('can you')
+        #Reply is selected from this list
+        canRepliesList = ['Sure','What made you think I can' + after + '?']
+        output = random.choice(canRepliesList)
+        return output + '\n', True
 
-    if re.search(r"^(how|what) (.*)",userInput):
-        return r"What do you think? \n".upper(), True
-
+    #If block to search for inputs starting with "Can I"
+    if re.search(r"^can i.*",userInput):
+        #Partition the input to find the context of it 
+        before, mid, after = userInput.partition('can i')
+        #Reply is selected from this list
+        canRepliesList = ['Sure','What made you think you can' + after + '?']
+        output = random.choice(canRepliesList)
+        return output + '\n', True
+	
+    #If block to search for inputs starting with "Who"	
     if re.search(r"^who.*",userInput):
-        return "Who do you think? \n".upper(), True
+        return "Who do you think?".upper() + '\n', True
 
+    #If block to search for inputs starting with "Hi or Hello"
     if re.search(r"\b(hi|hello)\b",userInput):
-        return "Hello again. What's on your mind? \n".upper(), True
+        return "Hello again. What's on your mind?".upper() + '\n', True
 
+    #If block to search for inputs having "all" in the sentence
     if re.search(r".* all .*",userInput):
-        return "In what way? \n".upper(), True
-
+        return "In what way?".upper() + '\n', True
+		
+    #If block to search for inputs having "always" in the sentence
     if re.search(r".* always .*",userInput):
-        return "Can you think of a specific example? \n".upper(), True
+        return "Can you think of a specific example?".upper()+ '\n', True
 
+    #If block to search for inputs having the keyword "depressed/sad/upset" and sending reply based on it
     if re.search(r"\b(depressed|sad|upset)\b",userInput):
         output = re.sub(r".*\b(depressed|sad|upset)\b.*",
                r"What made you \1? \n",userInput)
         return output.upper(), True
-
+    
+    #If block to search for inputs having "yes or no" in the sentence
     if re.search(r"\b(yes|no)\b",userInput):
-        return "And why do you think that is? \n".upper(), True
+        return "And why do you think that is?".upper() + '\n', True
 
+    #If block to search for inputs having "gave me" in the sentence
     if re.search(r"\b(gave) me\b",userInput):
         output = re.sub(r".*\b(gave)\b.*",
-               r"What made them give you that? \n",userInput)
+               r"What made them give you that?",userInput)
         return output.upper(), True
-
-    if re.search(r"\b(bye|fairwell|adios)\b",userInput):
+    
+	#Good bye list
+    if re.search(r"\b(bye|farewell|adios)\b",userInput):
         return "\n", False
 
-    # if there is no match ask them to rephrase the question:
-    else: return transform(userInput).upper() + '? \n', True
+    # if there is no match ask them the question:
+    else: 
+       #Get the transformed text by changing "You to I" or "am to are"
+       transformed_text = transform(userInput).upper()
+	   
+       #Created lambda function for asking default questions to the user
+       mylist = defaultdict(lambda: 'Why ')
+       mylist['I AM'] = 'Why are you'
+       mylist['YOU ARE'] = 'Why do you think you are'
+	   
+       if re.search(r"^i am.*",userInput):
+            append_word = mylist['I AM']
+            before, mid, after = transformed_text.partition('YOU ARE')
+            output =  userName + ', ' + append_word + after
+       elif re.search(r"^you are.*",userInput):
+            append_word = mylist['YOU ARE']
+            print(transformed_text)
+            before, mid, after = transformed_text.partition('I AM')
+            output =  userName + ', ' + append_word + after
+       else:
+            append_word = mylist['default']
+            output =  userName + ', ' + append_word + transformed_text
+ 
+       return output.upper() + '? \n', True
     # return random.choice(repetitionList), True
 
 
@@ -176,18 +245,30 @@ def main():
     converse = True
     userName = ""
     misundestandingCounter=0
+	
+	#Eliza will introduce from one of the replies from this introduction list
     introductionList =['What is on your mind today? \n', 'How do you feel today? \n',]
+	
+	#Eliza will end the conversation with his statement
     goodbyeList =['I hope this conversation was productive. Goodbye. \n','Goodbye. \n', 'Farewell \n',]
+	
     print(eliza)
+	
     #main function:
-    userName = extract_username(userName) # start conversation and get their name
-    userInput = input(random.choice(introductionList).upper()).strip().strip(punctuation).lower() #initiate conversation dialogue
-    while converse: #while conversation continues:
+	# start conversation and get user's name
+    userName = extract_username(userName) 
+	
+	#initiate conversation dialogue, choose from introduction list
+    userInput = input(random.choice(introductionList).upper()).strip().strip(punctuation).lower()
+	
+	#while conversation continues:
+    while converse: 
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
         if converse:
             userInput = input(reply).strip().strip(punctuation).lower() #if there is a reply allow user to respond
 
-    print(random.choice(goodbyeList).upper()) #say goodbye
+	#say goodbye if user types bye or farewell or adios
+    print(random.choice(goodbyeList).upper()) 
 
 
 if __name__ == '__main__':
