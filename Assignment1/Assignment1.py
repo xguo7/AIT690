@@ -1,32 +1,40 @@
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-"""
+'''
 AIT 690 | Assignment 1 | Due 9/19/2018
 Billy Ermlick
 Nidhi
 Xiaojie Guo
-Description here...
-check out default dict...
-Your program should engage in a dialogue with the user, with your program Eliza playing the role of a
-psychotherapist. Your program should be able carry out "word spotting", that is it should recognize
-certain key words and respond simply based on that word being present in the input. It should also be
-able to transform certain simple sentence forms from statements (from the user) into questions (that
-Eliza will ask). Also, try to personalize the dialogue by asking and using the user's name.
-In addition, your program should be robust. If the user inputs gibberish or a very complicated question,
-Eliza should respond in some plausible way (I didn't quite understand, can you say that another way,
-etc.). “Word spotting”, sentence transformation, and robustness are the minimum requirements for
-your code.
-You can implement additional functionalities, inspired by the dialogues presented in
-Weizenbaum paper. You may receive up to 1 bonus point max for any additional functionalities.
-This program should rely heavily on the use of regular expressions, so please make sure to review
-some introductory material in Learning Python, Programming Python, or some other source before
-attempting this program.
-Please comment your code. In particular, explain what words you are spotting for (and why) and what
-statement forms you are converting into questions (and why). Also make sure you name, class, etc. is
-clearly included in the comments.
-It is fine to use a Python reference book for examples of loops, variables, etc., but your Eliza specific
-code must be your own, and not taken from any other source (human, published, on the web, etc.)
-"""
+
+This code aims to implement a dialogue robot Eliza who can engage in a dialogue with the user. 
+Eliza will begin the dialogue by asking the name of the user. The current implementation of Eliza1
+contains:
+1) the function of transformating question from user to the answers of Eliza.(e.g " I love you." to "You love me?")
+2)."word spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
+3). Robust anwers in some plausible way when the users sentances are not understanded (e.g.I'm sorry I didn't catch that. What is your name again?
+4).lambda function for asking default questions to the user.
+
+When using the code, just run the Assignment1.py and type your sentences with symble' ' around. Type ENTER 
+when you finish the sentences.
+******
+Simple Example Dialogue:
+HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME? 
+    'My name is Coco'
+NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY? 
+    'I feel sad'
+WHAT MADE YOU SAD? 
+    'I always have lot of work to do'
+CAN YOU THINK OF A SPECIFIC EXAMPLE?
+    'Yes, l need to read 10 paper a week'
+AND WHY DO YOU THINK THAT IS?
+   'I donnot known, can you sing a song for me?'
+YOU DONNOT KNOWN, CAN I HELP YOU DO THAT? 
+    'can you help me?'
+Sure
+    'Great! bye"
+I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE. 
+******
+The detailed information of each function is stated within each portion.
+'''
+
 import re
 import random
 from collections import defaultdict
@@ -247,16 +255,18 @@ def determine_reply(userInput, userName):
     else: 
        #Get the transformed text by changing "You to I" or "am to are"
        transformed_text = transform(userInput).upper()
-	   
+
        #Created lambda function for asking default questions to the user
        defaultRepliesList = ['Why ' + transformed_text ,transformed_text, 'Why do you think so?']
        defaultoutput = userName + ', ' + random.choice(defaultRepliesList)
        mylist = defaultdict(lambda: defaultoutput)
        mylist['I AM'] = 'Why are you'
+
        mylist['YOU ARE'] = 'Why do you think I am'
        mylist['I'] = 'Why do you'
 	   
        if re.search(r".*i am.*",userInput):
+
             append_word = mylist['I AM']
             before, mid, after = transformed_text.partition('YOU ARE')
             output =  userName + ', ' + append_word + after
@@ -269,11 +279,13 @@ def determine_reply(userInput, userName):
             before, mid, after = transformed_text.partition('YOU')
             output =  userName + ', ' + append_word + after
        else:
+
             defaultreply = mylist['default']
             output =  defaultreply
  
        return output.upper() + '? \n', True
     # return random.choice(repetitionList), True	
+
 
 def main():
     '''
@@ -312,3 +324,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
