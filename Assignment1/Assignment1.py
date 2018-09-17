@@ -5,15 +5,15 @@ Nidhi
 Xiaojie Guo
 
 This code aims to implement a dialogue robot Eliza who can engage in a dialogue with the user.
-Eliza will begin the dialogue by asking the name of the user. The current implementation of Eliza1
+Eliza will begin the dialogue by asking the name of the user. The current implementation of Eliza
 contains:
 1) the function of transformating question from user to the answers of Eliza.(e.g " I love you." to "You love me?")
-2)."word spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
-3). Robust anwers in some plausible way when the users sentances are not understanded (e.g.I'm sorry I didn't catch that. What is your name again?
-4).lambda function for asking default questions to the user.
+2) "word spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
+3) Robust anwers in some plausible way when the users sentances are not understanded (e.g.I'm sorry I didn't catch that. What is your name again?)
+4) lambda function for asking default questions to the user, such as storing and returning the user's favorite things throughout discourse.
 
-When using the code, just run the Assignment1.py and type your sentences with symble' ' around. Type ENTER
-when you finish the sentences.
+When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions.
+
 ******
 Simple Example Dialogue:
 HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME?
@@ -23,10 +23,10 @@ NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY?
 WHAT MADE YOU SAD?
     'I always have lot of work to do'
 CAN YOU THINK OF A SPECIFIC EXAMPLE?
-    'Yes, l need to read 10 paper a week'
+    'Yes, I need to read 10 paper a week'
 AND WHY DO YOU THINK THAT IS?
-   'I donnot known, can you sing a song for me?'
-YOU DONNOT KNOWN, CAN I HELP YOU DO THAT?
+   'I do not know, can you sing a song for me?'
+YOU DO NOT KNOWN, CAN I HELP YOU DO THAT?
     'can you help me?'
 Sure
     'Great! bye"
@@ -54,7 +54,7 @@ eliza = (" \
                \n")
 
 #these global variables are used to store and retrieve the user's favorite things
-defaultReply = "...well maybe I'm not sure."
+defaultReply = "...well maybe I am not sure."
 myfavorites = defaultdict(lambda: defaultReply)
 index = ['animal', 'color', 'flavor', 'holiday']
 
@@ -178,13 +178,13 @@ def determine_reply(userInput, userName):
         output = random.choice(whatRepliesList)
         return output.upper() + '\n', True
 
-    if re.search(r"\byes*\B",userInput):
+    if re.search(r"\byes\b.*\B",userInput):
         #Reply is selected from this list
-        yesRepliesList = ['I see', 'Are you sure?',]
+        yesRepliesList = ['I see...', 'Are you sure?',]
         output = random.choice(yesRepliesList)
         return output.upper() + '\n', True
 
-    if re.search(r"\bno*\B",userInput):
+    if re.search(r"\bno\b.*\B",userInput):
         #Reply is selected from this list
         noRepliesList = ['why are you being so negative', 'Are you always this pessimistic?',]
         output = random.choice(noRepliesList)
@@ -238,7 +238,7 @@ def determine_reply(userInput, userName):
 
     #If block to search for inputs having the keyword "depressed/sad/upset" and sending reply based on it
     if re.search(r"\b(depressed|sad|upset|unhappy|angry|positive|optimistic|fearful|happy)\b",userInput):
-        output = re.sub(r".*\b(depressed|sad|upset)\b.*",
+        output = re.sub(r".*\b(depressed|sad|upset|unhappy|angry|positive|optimistic|fearful|happy)\b.*",
                r"What made you \1? \n",userInput)
         return output.upper(), True
 
@@ -328,13 +328,13 @@ def main():
     userName = extract_username(userName)
 
 	#initiate conversation dialogue, choose from introduction list
-    userInput = input(random.choice(introductionList).upper()).strip().strip(punctuation).lower()
+    userInput = input(random.choice(introductionList).upper()).strip(punctuation).lower()
 
 	#while conversation continues:
     while converse:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
         if converse:
-            userInput = input(reply).strip().strip(punctuation).lower() #if there is a reply allow user to respond
+            userInput = input(reply).strip().lower().strip(punctuation) #if there is a reply allow user to respond
 
 	#say goodbye if user types bye or farewell or adios
     print(random.choice(goodbyeList).upper())
