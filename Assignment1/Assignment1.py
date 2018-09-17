@@ -53,6 +53,10 @@ eliza = (" \
                 ||||||||||||||||||||||||||||||||||||||||||||||||| \n \
                \n")
 
+#these global variables are used to store and retrieve the user's favorite things
+defaultReply = "...well maybe I'm not sure."
+myfavorites = defaultdict(lambda: defaultReply)
+index = ['animal', 'color', 'flavor', 'holiday']
 
 def extract_username(userName):
     '''
@@ -107,6 +111,7 @@ def determine_reply(userInput, userName):
     '''
     repetitionList =['Can you repeat that, ' + userName.upper() + '? \n', "I'm not sure I follow? \n",
                      "I didn't quite understand, can you say that another way? \n",]
+
 
     def transform(Input):
 		#Replace "i" with "you"
@@ -243,8 +248,26 @@ def determine_reply(userInput, userName):
                r"What made them give you that?",userInput)
         return output.upper(), True
 
+    #If block to search for inputs having the keyword "favorite" and store this information for later use
+    if re.search(r"\bfavorite\b",userInput):
+        print("speaking of favorites... I'd like to learn more about you".upper())
+        cat = random.choice(index)
+        diffcat = cat
+        i=1
+        print("I know your favorite " + cat + " is " + myfavorites[cat] + "...")
+        while myfavorites[diffcat] != defaultReply and i < 30:
+            diffcat = random.choice(index)
+            i=i+1
+        if i <30:
+            myfavorites[diffcat] = input("...What is your favorite " + diffcat + "? ")
+            output = "Got it. What else is on your mind?"
+        else:
+            output = "I guess I know everything about you..."
+        return output.upper(), True
+
+
 	#Good bye list
-    if re.search(r"\b(bye|farewell|adios|see you)\b",userInput):
+    if re.search(r"\b(bye|farewell|adios|see you later| talk to you later)\b",userInput):
         return "\n", False
 
     # if there is no match ask them the question:
@@ -290,7 +313,7 @@ def main():
     #Variable Initialization
     converse = True
     userName = ""
-    misundestandingCounter=0
+    # misundestandingCounter=0
 
 	#Eliza will introduce from one of the replies from this introduction list
     introductionList =['What is on your mind today? \n', 'How do you feel today? \n',]
