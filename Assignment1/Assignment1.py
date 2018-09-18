@@ -10,7 +10,7 @@ contains:
 2) "word spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
 3) Robust anwers in some plausible way when the users sentances are not understanded (e.g.I'm sorry I didn't catch that. What is your name again?)
 4) lambda function for asking default questions to the user, such as storing and returning the user's favorite things throughout discourse.
-When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions.
+When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions or punctuation.
 ******
 Simple Example Dialogue:
 HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME?
@@ -21,7 +21,7 @@ WHAT MADE YOU SAD?
     'I always have lot of work to do'
 CAN YOU THINK OF A SPECIFIC EXAMPLE?
     'Yes, I need to read 10 paper a week'
-AND WHY DO YOU THINK THAT IS? 	
+AND WHY DO YOU THINK THAT IS?
    'I do not know, can you sing a song for me?'
 YOU DO NOT KNOWN, CAN I HELP YOU DO THAT?
     'can you help me?'
@@ -106,7 +106,7 @@ def checkgibberish_words(userInput):
         if not chkWord:
             gibberishWord = True
             #print(word)
-			     
+
     return gibberishWord
 
 def determine_reply(userInput, userName):
@@ -171,12 +171,12 @@ def determine_reply(userInput, userName):
         output = re.sub(r"-12-",r'has it',output)
 
         return output
-    
+
     gibberishWord = checkgibberish_words(userInput)
     if gibberishWord:
         output = "I didn't quite understand. Can you say that another way?"
         return output.upper() + '\n', True
-	
+
     #If block to search for inputs starting with "how"
     if re.search(r"^(how) (.*)",userInput):
         #Reply is selected from this list
@@ -253,7 +253,7 @@ def determine_reply(userInput, userName):
         output = re.sub(r".*\b(depressed|sad|upset|unhappy|angry|positive|optimistic|fearful|happy)\b.*",
                r"What made you \1? \n",userInput)
         return output.upper(), True
-		
+
 	#If block to search for inputs having the keyword "suffering" and sending reply based on it
     if re.search(r"\bsuffering\b",userInput):
         return "How can I help you?".upper()+ '\n', True
@@ -267,7 +267,7 @@ def determine_reply(userInput, userName):
     #If block to search for inputs having "computer" in the sentence
     if re.search(r".*computer.*",userInput):
         return "Are you talking about me?".upper() + '\n', True
-       
+
     #If block to search for inputs having the keyword "favorite" and store this information for later use
     if re.search(r"\bfavorite\b",userInput):
         print("speaking of favorites... I'd like to learn more about you".upper())
@@ -292,7 +292,7 @@ def determine_reply(userInput, userName):
 
     # if there is no match ask them the question:
     else:
-       
+
        transformed_text = transform(userInput).upper()
 
        #Created lambda function for asking default questions to the user
@@ -352,7 +352,7 @@ def main():
 
 	#initiate conversation dialogue, choose from introduction list
     userInput = input(random.choice(introductionList).upper()).strip(punctuation).lower()
-	
+
 	#while conversation continues:
     while converse:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
