@@ -1,7 +1,7 @@
 # AIT 690 | Assignment 1 | Due 9/19/2018
 ### Billy Ermlick
-### Nidhi Mehrotra
 ### Xiaojie Guo
+### Nidhi Mehrotra
 This code aims to implement a dialogue robot Eliza who can engage in a dialogue with the user.
 Eliza will begin the dialogue by asking the name of the user. Current implementation of Eliza contains:
 1)	"Word Spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
