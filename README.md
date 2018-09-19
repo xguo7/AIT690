@@ -13,19 +13,19 @@ HOW TO RUN THE PROGRAM:
 When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions.
 ***********************************************************************************
 Simple Example Dialogue: <br>
-HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME?
+HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME? <br>
     'My name is Coco'
-NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY?
+NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY? <br>
     'I feel sad'
-WHAT MADE YOU SAD?
+WHAT MADE YOU SAD? <br>
     'I always have lot of work to do'
-CAN YOU THINK OF A SPECIFIC EXAMPLE?
+CAN YOU THINK OF A SPECIFIC EXAMPLE? <br>
     'Yes, I need to read 10 paper a week'
-AND WHY DO YOU THINK THAT IS? 	
+AND WHY DO YOU THINK THAT IS? 	<br>
    'I do not know, can you sing a song for me?'
-YOU DO NOT KNOW, CAN I HELP YOU DO THAT?
+YOU DO NOT KNOW, CAN I HELP YOU DO THAT? <br>
     'can you help me?'
-Sure
+Sure <br>
     'Great! bye"
-I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE.
+I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE. 
 
