@@ -12,20 +12,30 @@ Eliza will begin the dialogue by asking the name of the user. Current implementa
 HOW TO RUN THE PROGRAM:
 When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions.
 ***********************************************************************************
-Simple Example Dialogue: <br>
-HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME? <br>
-    'My name is Coco'<br>
-NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY? <br>
-    'I feel sad'<br>
-WHAT MADE YOU SAD? <br>
-    'I always have lot of work to do'<br>
-CAN YOU THINK OF A SPECIFIC EXAMPLE? <br>
-    'Yes, I need to read 10 paper a week'<br>
-AND WHY DO YOU THINK THAT IS? 	<br>
-   'I do not know, can you sing a song for me?'<br>
-YOU DO NOT KNOW, CAN I HELP YOU DO THAT? <br>
-    'can you help me?'<br>
-Sure <br>
-    'Great! bye"<br>
-I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE. <br>
-
+Simple Example Dialogue:
+HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME?
+    'My name is Coco'
+NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY? 
+    'i fee l sAD...'    
+"I DIDN'T QUITE UNDERSTAND. CAN YOU SAY THAT ANOTHER WAY?"
+    'I feel sad'
+TELL ME MORE.
+    'I always have lot of work to do'
+CAN YOU THINK OF A SPECIFIC EXAMPLE?
+    'Yes, I need to read 10 paper a week'
+ARE YOU SURE?
+    'Pretty sure'
+COCO, WHY PRETTY SURE?     
+    'can you sing a song for me?'
+Sure
+    'I want to share my favorites'
+COCO, WHY DO YOU WANT TO SHARE YOUR FAVORITES?    
+    'favorite is an interesting topic'
+SPEAKING OF FAVORITES... I'D LIKE TO LEARN MORE ABOUT YOU
+I know your favorite song is ...well maybe I am not sure....
+...What is your favorite song?  
+    'My favorite song is Raise you up'   
+GOT IT. WHAT ELSE IS ON YOUR MIND?     
+    'Nothing! bye"
+I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE.
+***************************************************************************************
