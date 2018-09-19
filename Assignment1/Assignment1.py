@@ -1,18 +1,34 @@
 '''
 AIT 690 | Assignment 1 | Due 9/19/2018
 Billy Ermlick
-Nidhi
+Nidhi Mehrotra
 Xiaojie Guo
+************************************************************************************************************************************************
 This code aims to implement a dialogue robot Eliza who can engage in a dialogue with the user.
-Eliza will begin the dialogue by asking the name of the user. The current implementation of Eliza
-contains:
-1) the function of transformating question from user to the answers of Eliza.(e.g " I love you." to "You love me?")
-2) "word spotting" function to extract the keywords from users' answer and give related feedback. (e.g. 'sad' to 'What makes you sad?')
-3) Robust anwers in some plausible way when the users sentances are not understanded (e.g.I'm sorry I didn't catch that. What is your name again?)
-4) lambda function for asking default questions to the user, such as storing and returning the user's favorite things throughout discourse.
-When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions or punctuation.
-******
-Simple Example Dialogue:
+Eliza will begin the dialogue by asking the name of the user. Current implementation of Eliza contains:
+
+1)	"Word Spotting" function to extract the keywords from users' answer and give related feedback. 
+    (e.g. 'sad' to 'What makes you sad?')
+2)	 Transforming Sentences from user to the answers/questions from Eliza.(e.g " I love you." to "You love me?")
+3)	Personalized the conversation by using user name in some of the questions
+4)	Robust answers in some plausible way when the users enters some gibberish sentence or the sentences are not understandable 
+    (e.g.I DIDN'T QUITE UNDERSTAND. CAN YOU SAY THAT ANOTHER WAY?)
+5)	Used lambda function for asking default questions to the user, such as storing and returning the user's favorite things throughout discourse.
+
+***********************HOW TO RUN THE PROGRAM:****************************************************************************************************
+When using the code, just run the Assignment1.py and type your response into the prompt and press ENTER. Do not use contractions.
+
+***********************HOW TO END THE PROGRAM:****************************************************************************************************
+Program can be ended by using any of these keywords
+•	Bye
+•	Farewell
+•	Adios
+•	see you later
+•	talk to you later
+
+************************************************************************************
+SIMPLE EXAMPLE DIALOGUE:
+************************************************************************************
 HELLO, MY NAME IS ELIZA. I AM A PSYCHOTHERAPIST. WHAT IS YOUR NAME?
     'My name is Coco'
 NICE TO MEET YOU, COCO. HOW DO YOU FEEL TODAY?
@@ -21,23 +37,28 @@ WHAT MADE YOU SAD?
     'I always have lot of work to do'
 CAN YOU THINK OF A SPECIFIC EXAMPLE?
     'Yes, I need to read 10 paper a week'
-AND WHY DO YOU THINK THAT IS?
+AND WHY DO YOU THINK THAT IS? 	
    'I do not know, can you sing a song for me?'
 YOU DO NOT KNOWN, CAN I HELP YOU DO THAT?
     'can you help me?'
 Sure
     'Great! bye"
 I HOPE THIS CONVERSATION WAS PRODUCTIVE. GOODBYE.
-******
+***************************************************************************************
+
 The detailed information of each function is stated within each portion.
 '''
 
 import re
 import random
+import string
 from collections import defaultdict
 from string import punctuation
 import nltk
 from nltk.corpus import words
+from nltk.corpus import wordnet 
+from string import digits
+from nltk.stem import WordNetLemmatizer
 
 eliza = (" \
                 ||||||||||||||||||||||||||||||||||||||||||||||||| \n \
@@ -100,13 +121,32 @@ def name_retrieval(re_pattern,content):
         return False
 
 def checkgibberish_words(userInput):
+    '''
+    This function checks if all the words of the input sentence is a valid English word.
+    '''
+    #Remove punctuation
+
+    #make translator object
+    translator=str.maketrans('','',string.punctuation)
+    userInput=userInput.translate(translator)
+    
+    #Remove digits from the input
+    userInput_NoDigits = re.sub(r'\d+', '', userInput) 
+    wnl = WordNetLemmatizer()
+	
     gibberishWord = False
-    for word in userInput.split():
+    for word in userInput_NoDigits.split():
         chkWord=word in words.words()
         if not chkWord:
-            gibberishWord = True
-            #print(word)
-
+                chkWordNet = word in wordnet.words()
+                if not chkWordNet:
+                     lemma = wnl.lemmatize(word, 'n')
+                     #WordNet and Word dictionary does not include plural words, 
+                     #hence checking for plural words through WordNetLemmatizer
+                     plural = True if word is not lemma else False
+                     if not plural:
+                        gibberishWord = True
+                        
     return gibberishWord
 
 def determine_reply(userInput, userName):
@@ -118,7 +158,6 @@ def determine_reply(userInput, userName):
     '''
     repetitionList =['Can you repeat that, ' + userName.upper() + '? \n', "I'm not sure I follow? \n",
                      "I didn't quite understand, can you say that another way? \n",]
-
 
     def transform(Input):
 		#Replace "i" with "you"
@@ -171,12 +210,13 @@ def determine_reply(userInput, userName):
         output = re.sub(r"-12-",r'has it',output)
 
         return output
-
+    
+    #Check if the sentence has any gibberish word
     gibberishWord = checkgibberish_words(userInput)
     if gibberishWord:
         output = "I didn't quite understand. Can you say that another way?"
         return output.upper() + '\n', True
-
+	
     #If block to search for inputs starting with "how"
     if re.search(r"^(how) (.*)",userInput):
         #Reply is selected from this list
@@ -200,12 +240,6 @@ def determine_reply(userInput, userName):
         #Reply is selected from this list
         noRepliesList = ['why are you being so negative', 'Are you always this pessimistic?',]
         output = random.choice(noRepliesList)
-        return output.upper() + '\n', True
-
-    if re.search(r"\bfeel*\B",userInput):
-        #Reply is selected from this list
-        feelRepliesList = ['Tell me more...',]
-        output = random.choice(feelRepliesList)
         return output.upper() + '\n', True
 
     if re.search(r"\bbecause.*",userInput):
@@ -253,7 +287,14 @@ def determine_reply(userInput, userName):
         output = re.sub(r".*\b(depressed|sad|upset|unhappy|angry|positive|optimistic|fearful|happy)\b.*",
                r"What made you \1? \n",userInput)
         return output.upper(), True
+		
+    if re.search(r"\bfeel*\B",userInput):
+        #Reply is selected from this list
+        feelRepliesList = ['Tell me more...',]
+        output = random.choice(feelRepliesList)
+        return output.upper() + '\n', True
 
+		
 	#If block to search for inputs having the keyword "suffering" and sending reply based on it
     if re.search(r"\bsuffering\b",userInput):
         return "How can I help you?".upper()+ '\n', True
@@ -267,7 +308,7 @@ def determine_reply(userInput, userName):
     #If block to search for inputs having "computer" in the sentence
     if re.search(r".*computer.*",userInput):
         return "Are you talking about me?".upper() + '\n', True
-
+       
     #If block to search for inputs having the keyword "favorite" and store this information for later use
     if re.search(r"\bfavorite\b",userInput):
         print("speaking of favorites... I'd like to learn more about you".upper())
@@ -292,7 +333,7 @@ def determine_reply(userInput, userName):
 
     # if there is no match ask them the question:
     else:
-
+       
        transformed_text = transform(userInput).upper()
 
        #Created lambda function for asking default questions to the user
@@ -352,7 +393,7 @@ def main():
 
 	#initiate conversation dialogue, choose from introduction list
     userInput = input(random.choice(introductionList).upper()).strip(punctuation).lower()
-
+	
 	#while conversation continues:
     while converse:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
