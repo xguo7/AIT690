@@ -7,11 +7,11 @@ Xiaojie Guo
 This code aims to implement a dialogue robot Eliza who can engage in a dialogue with the user.
 Eliza will begin the dialogue by asking the name of the user. Current implementation of Eliza contains:
 
-1)	"Word Spotting" function to extract the keywords from users' answer and give related feedback. 
+1)	"Word Spotting" function to extract the keywords from users' answer and give related feedback.
     (e.g. 'sad' to 'What makes you sad?')
 2)	 Transforming Sentences from user to the answers/questions from Eliza.(e.g " I love you." to "You love me?")
 3)	Personalized the conversation by using user name in some of the questions
-4)	Robust answers in some plausible way when the users enters some gibberish sentence or the sentences are not understandable 
+4)	Robust answers in some plausible way when the users enters some gibberish sentence or the sentences are not understandable
     (e.g.I DIDN'T QUITE UNDERSTAND. CAN YOU SAY THAT ANOTHER WAY?)
 5)	Used lambda function for asking default questions to the user, such as storing and returning the user's favorite things throughout discourse.
 
@@ -37,7 +37,7 @@ WHAT MADE YOU SAD?
     'I always have lot of work to do'
 CAN YOU THINK OF A SPECIFIC EXAMPLE?
     'Yes, I need to read 10 paper a week'
-AND WHY DO YOU THINK THAT IS? 	
+AND WHY DO YOU THINK THAT IS?
    'I do not know, can you sing a song for me?'
 YOU DO NOT KNOWN, CAN I HELP YOU DO THAT?
     'can you help me?'
@@ -56,7 +56,7 @@ from collections import defaultdict
 from string import punctuation
 import nltk
 from nltk.corpus import words
-from nltk.corpus import wordnet 
+from nltk.corpus import wordnet
 from string import digits
 from nltk.stem import WordNetLemmatizer
 
@@ -129,11 +129,11 @@ def checkgibberish_words(userInput):
     #make translator object
     translator=str.maketrans('','',string.punctuation)
     userInput=userInput.translate(translator)
-    
+
     #Remove digits from the input
-    userInput_NoDigits = re.sub(r'\d+', '', userInput) 
+    userInput_NoDigits = re.sub(r'\d+', '', userInput)
     wnl = WordNetLemmatizer()
-	
+
     gibberishWord = False
     for word in userInput_NoDigits.split():
         chkWord=word in words.words()
@@ -141,12 +141,12 @@ def checkgibberish_words(userInput):
                 chkWordNet = word in wordnet.words()
                 if not chkWordNet:
                      lemma = wnl.lemmatize(word, 'n')
-                     #WordNet and Word dictionary does not include plural words, 
+                     #WordNet and Word dictionary does not include plural words,
                      #hence checking for plural words through WordNetLemmatizer
                      plural = True if word is not lemma else False
                      if not plural:
                         gibberishWord = True
-                        
+
     return gibberishWord
 
 def determine_reply(userInput, userName):
@@ -210,13 +210,13 @@ def determine_reply(userInput, userName):
         output = re.sub(r"-12-",r'has it',output)
 
         return output
-    
+
     #Check if the sentence has any gibberish word
     gibberishWord = checkgibberish_words(userInput)
     if gibberishWord:
         output = "I didn't quite understand. Can you say that another way?"
         return output.upper() + '\n', True
-	
+
     #If block to search for inputs starting with "how"
     if re.search(r"^(how) (.*)",userInput):
         #Reply is selected from this list
@@ -287,14 +287,14 @@ def determine_reply(userInput, userName):
         output = re.sub(r".*\b(depressed|sad|upset|unhappy|angry|positive|optimistic|fearful|happy)\b.*",
                r"What made you \1? \n",userInput)
         return output.upper(), True
-		
+
     if re.search(r"\bfeel*\B",userInput):
         #Reply is selected from this list
         feelRepliesList = ['Tell me more...',]
         output = random.choice(feelRepliesList)
         return output.upper() + '\n', True
 
-		
+
 	#If block to search for inputs having the keyword "suffering" and sending reply based on it
     if re.search(r"\bsuffering\b",userInput):
         return "How can I help you?".upper()+ '\n', True
@@ -308,7 +308,7 @@ def determine_reply(userInput, userName):
     #If block to search for inputs having "computer" in the sentence
     if re.search(r".*computer.*",userInput):
         return "Are you talking about me?".upper() + '\n', True
-       
+
     #If block to search for inputs having the keyword "favorite" and store this information for later use
     if re.search(r"\bfavorite\b",userInput):
         print("speaking of favorites... I'd like to learn more about you".upper())
@@ -333,7 +333,7 @@ def determine_reply(userInput, userName):
 
     # if there is no match ask them the question:
     else:
-       
+
        transformed_text = transform(userInput).upper()
 
        #Created lambda function for asking default questions to the user
@@ -393,7 +393,7 @@ def main():
 
 	#initiate conversation dialogue, choose from introduction list
     userInput = input(random.choice(introductionList).upper()).strip(punctuation).lower()
-	
+
 	#while conversation continues:
     while converse:
         reply, converse = determine_reply(userInput, userName) #determine a reply based on user input and if conversation should continue
